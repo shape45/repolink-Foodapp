@@ -1,0 +1,296 @@
+import React from 'react';
+import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from 'react-native';
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+      />
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}>LOGIN</Text>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <Text style={styles.link}>Forgot Password?</Text>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <Text style={styles.link}>SIGN UP</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#FFA500', // Orange background
+  },
+  input: {
+    height: 40,
+    borderColor: '#000',
+    borderWidth: 1,
+    marginBottom: 12,
+    padding: 10,
+    backgroundColor: '#fff',
+  },
+  button: {
+    backgroundColor: '#FFA500',
+    padding: 12,
+    marginBottom: 12,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  link: {
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+});
+
+import React from 'react';
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+export default function OrderScreen({ navigation }) {
+  const categories = [
+    { id: '1', title: 'breakfast', image: 'https://example.com/breakfast.jpg' },
+    { id: '2', title: 'lunch', image: 'https://example.com/lunch.jpg' },
+    { id: '3', title: 'dinner', image: 'https://example.com/dinner.jpg' },
+    { id: '4', title: 'deserts', image: 'https://example.com/deserts.jpg' },
+  ];
+
+  return 
+    <View style=styles.container}>
+      {/* Header with back and menu icons */}
+      <View style=styles.header>
+        <TouchableOpacity onPress={ > navigation.goBack()}>
+          <Icon name="chevron-left" size={24} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerText > Order</Text>
+        <TouchableOpacity onPress={ > alert('Menu clicked')>
+          <Icon name="bars" size={24} color="#fff" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Scrollable categories */}
+      <ScrollView>
+        {categories.map(category) => 
+          <TouchableOpacity key={category.id} style={styles.categoryContainer} onPress={  alert(`Selected: ${category.title}`)}>
+            <ImageBackground source={{ uri: category.image  style={styles.categoryImage}>
+              <Text style={styles.categoryText}>{category.title}</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+        
+      </ScrollView>
+    </View>
+  ;
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FF9800', // Background color for the screen
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: '#FF9800',
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  categoryContainer: {
+    height: 200,
+    marginBottom: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  categoryImage: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  categoryText: {
+    fontSize: 24,
+    color: '#fff',
+    backgroundColor: 'rgba(0,0,0,0.5)', // Transparent background for text
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+});
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+export default function CheckoutScreen() {
+  // Dummy order data
+  const [orderItems, setOrderItems] = useState([
+    { id: '1', name: 'Jeff Burger', description: 'Double Beef', price: 7.00, quantity: 2, image: 'https://example.com/burger1.png' },
+    { id: '2', name: 'Pizza Burg', description: 'Beef Pizza', price: 23.00, quantity: 1, image: 'https://example.com/pizza.png' },
+    { id: '3', name: 'Beef Burger', description: 'Cheesy Mozzarella', price: 7.00, quantity: 2, image: 'https://example.com/burger2.png' },
+  ]);
+
+  const incrementQuantity = (item) => {
+    const updatedItems = orderItems.map(orderItem => 
+      orderItem.id === item.id 
+        ? { ...orderItem, quantity: orderItem.quantity + 1 }
+        : orderItem
+    );
+    setOrderItems(updatedItems);
+  };
+
+  const decrementQuantity = (item) => {
+    const updatedItems = orderItems.map(orderItem => 
+      orderItem.id === item.id && orderItem.quantity > 1
+        ? { ...orderItem, quantity: orderItem.quantity - 1 }
+        : orderItem
+    );
+    setOrderItems(updatedItems);
+  };
+
+  const removeItem = (item) => {
+    const updatedItems = orderItems.filter(orderItem => orderItem.id !== item.id);
+    setOrderItems(updatedItems);
+  };
+
+  const calculateTotal = () => {
+    return orderItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Check Out</Text>
+
+      <FlatList
+        data={orderItems}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.itemContainer}>
+            <Image source={{ uri: item.image }} style={styles.itemImage} />
+            <View style={styles.itemDetails}>
+              <Text style={styles.itemName}>{item.name}</Text>
+              <Text style={styles.itemDescription}>{item.description}</Text>
+              <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
+            </View>
+            <View style={styles.quantityContainer}>
+              <TouchableOpacity onPress={() => decrementQuantity(item)}>
+                <Icon name="minus" size={20} color="#FFA500" />
+              </TouchableOpacity>
+              <Text style={styles.quantityText}>{item.quantity}</Text>
+              <TouchableOpacity onPress={() => incrementQuantity(item)}>
+                <Icon name="plus" size={20} color="#FFA500" />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity onPress={() => removeItem(item)} style={styles.deleteButton}>
+              <Icon name="trash" size={20} color="red" />
+            </TouchableOpacity>
+          </View>
+        )}
+      />
+
+      <View style={styles.totalContainer}>
+        <Text style={styles.totalText}>Delivery services: $0.00</Text>
+        <Text style={styles.totalText}>Total: ${calculateTotal()}</Text>
+      </View>
+
+      <TouchableOpacity style={styles.checkoutButton}>
+        <Text style={styles.checkoutButtonText}>Checkout</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FF9800', // Orange background
+    padding: 20,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 15,
+    alignItems: 'center',
+  },
+  itemImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 10,
+  },
+  itemDetails: {
+    flex: 1,
+    marginLeft: 15,
+  },
+  itemName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  itemDescription: {
+    fontSize: 14,
+    color: '#888',
+  },
+  itemPrice: {
+    fontSize: 16,
+    color: '#FFA500',
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  quantityText: {
+    marginHorizontal: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  deleteButton: {
+    marginLeft: 10,
+  },
+  totalContainer: {
+    marginTop: 20,
+  },
+  totalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'right',
+  },
+  checkoutButton: {
+    backgroundColor: '#fff',
+    paddingVertical: 15,
+    borderRadius: 10,
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  checkoutButtonText: {
+    color: '#FFA500',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});
